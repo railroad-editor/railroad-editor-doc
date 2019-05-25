@@ -6,7 +6,8 @@ phases:
       - echo Generating html...
       - cd docs
       - find . -name "*.adoc" -type f | xargs asciidoctor -r asciidoctor-diagram -D output
-      - rsync -vr --exclude='_*' --exclude='output' . output
+#      - rsync -vr --exclude='_*' --exclude='output' . output
+      - cp -r images favicon.png output
   post_build:
     commands:
       # ビルドフェーズで失敗したらアップロードを実行しない
