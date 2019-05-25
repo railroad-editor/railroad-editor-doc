@@ -5,8 +5,9 @@ phases:
     commands:
       - echo Generating html...
       - find . -name "*.adoc" -type f | xargs asciidoctor -r asciidoctor-diagram -D output
+      - cp -r images output
   post_build:
     commands:
       - (if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi) ## ビルドフェーズで失敗したらアップロードを実行しない
       - echo Uploading to S3...
-      - aws s3 sync output images s3://railroad-editor-doc/
+      - aws s3 sync output s3://railroad-editor-doc/
