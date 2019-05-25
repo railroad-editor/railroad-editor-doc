@@ -6,10 +6,10 @@ phases:
       - echo Generating html...
       - cd docs
       - find . -name "*.adoc" -type f | xargs asciidoctor -r asciidoctor-diagram -D output
-      - cp -r images output
-      - ls -l
+      - rsync -vr --exclude='_*' --exclude='output' . output
   post_build:
     commands:
-      - (if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi) ## ビルドフェーズで失敗したらアップロードを実行しない
+      # ビルドフェーズで失敗したらアップロードを実行しない
+      - (if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi)
       - echo Uploading to S3...
       - aws s3 sync output s3://railroad-editor-doc/
