@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       docker: 18
     commands:
-      - apt-get install asciidoctor
+      - apt-get install -y asciidoctor
   build:
     commands:
       - echo Generating html...
