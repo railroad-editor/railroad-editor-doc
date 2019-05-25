@@ -10,6 +10,6 @@ phases:
   post_build:
     commands:
       # ビルドフェーズで失敗したらアップロードを実行しない
-      - (if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi)
+      - if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi
       - echo Uploading to S3...
       - aws s3 sync output s3://railroad-editor-doc/
