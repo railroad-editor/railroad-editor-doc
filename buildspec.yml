@@ -1,9 +1,16 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      ruby: 2.6
+  pre_build:
+    commands:
+      - yum install -y ruby
+      - gem install asciidoctor asciidoctor-diagram
   build:
     commands:
-      - echo Generating html...
+      - echo "Generating HTML ..."
       - cd docs
       - find . -name "*.adoc" -type f | xargs asciidoctor -r asciidoctor-diagram -D output
 #      - rsync -vr --exclude='_*' --exclude='output' . output
@@ -12,6 +19,7 @@ phases:
     commands:
       # ビルドフェーズで失敗したらアップロードを実行しない
       - if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; else exit 0; fi
-      - echo Uploading to S3...
-      - aws s3 sync output s3://railroad-editor-doc/
-      - aws cloudfront create-invalidation --distribution-id E13T4PTO72P1B5 --paths '/*'
+      - echo "Uploading to S3 bucket ${S3_BUCKET_NAME} ..."
+      - aws s3 sync output s3://${S3_BUCKET_NAME}
+      - echo "Invalidating cache of Cloudfront distribution ${CLOUDFRONT_DISTRIBUTION_ID} ..."
+      - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths '/*'
